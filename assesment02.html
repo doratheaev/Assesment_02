@@ -1,5 +1,8 @@
 <!-- Dengan menggunakan datatable, tampilkan data dari API ke dalam datatable menggunakan AJAX (40 poin)
 https://www.balldontlie.io/api/v1/teams -->
+<!-- Dari api yang sudah dipilih, buatlah form berdasarkan atribut API yang dipilih. Misalkan pesan json dari sebuah API:  {"id":101,"advice":"Alway do anything for love, but don't do that.","date":"2015-12-08"}
+Maka akan dibuat form HTML dengan 3 text field yaitu id, advice dan date (25 poin) -->\
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,10 +20,55 @@ https://www.balldontlie.io/api/v1/teams -->
         th {
             background-color: #f2f2f2;
         }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .form-container label,
+        .form-container input[type="text"],
+        .form-container input[type="submit"] {
+            margin-top: 5px;
+        }
+        .form-container input[type="text"] {
+            width: 200px;
+            padding: 5px;
+        }
+        .form-container input[type="submit"] {
+            padding: 5px 10px;
+        }
     </style>
 </head>
 <body>
     <h1>Data Teams</h1>
+
+    <div class="form-container">
+        <h2>Tambah Tim Baru:</h2>
+        <form id="team-input-form">
+            <label for="team-id">Team ID:</label>
+            <input type="text" id="team-id" name="team-id" placeholder="Team ID...">
+            <label for="team-abbreviation">Abbreviation:</label>
+            <input type="text" id="team-abbreviation" name="team-abbreviation" placeholder="Abbreviation...">
+            <label for="team-city">City:</label>
+            <input type="text" id="team-city" name="team-city" placeholder="City...">
+            <label for="team-conference">Conference:</label>
+            <input type="text" id="team-conference" name="team-conference" placeholder="Conference...">
+            <label for="team-division">Division:</label>
+            <input type="text" id="team-division" name="team-division" placeholder="Division...">
+            <label for="team-fullname">Full Name:</label>
+            <input type="text" id="team-fullname" name="team-fullname" placeholder="Full Name...">
+            <label for="team-name">Name:</label>
+            <input type="text" id="team-name" name="team-name" placeholder="Name...">
+            <input type="submit" value="Tambah Tim">
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h2>Cari Tim:</h2>
+        <form id="team-form">
+            <label for="team-search">Nama Tim:</label>
+            <input type="text" id="team-search" name="team-search" placeholder="Masukkan nama tim...">
+            <input type="submit" value="Cari">
+        </form>
+    </div>
 
     <table>
         <thead>
@@ -38,32 +86,74 @@ https://www.balldontlie.io/api/v1/teams -->
     </table>
 
     <script>
+        const form = document.getElementById('team-form');
+        const inputForm = document.getElementById('team-input-form');
         const tableBody = document.getElementById('team-data');
 
+        // Fungsi untuk menampilkan data tim pada tabel
+        function renderTeamData(teams) {
+            let tableHTML = '';
+
+            teams.forEach(team => {
+                tableHTML += `
+                    <tr>
+                        <td>${team.id}</td>
+                        <td>${team.abbreviation}</td>
+                        <td>${team.city}</td>
+                        <td>${team.conference}</td>
+                        <td>${team.division}</td>
+                        <td>${team.full_name}</td>
+                        <td>${team.name}</td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = tableHTML;
+        }
+
+        // Mendapatkan data tim dari API dan menampilkan pada tabel
         fetch('https://www.balldontlie.io/api/v1/teams')
             .then(response => response.json())
             .then(data => {
                 const teamData = data.data;
-
-                let tableHTML = '';
-
-                teamData.forEach(team => {
-                    tableHTML += `
-                        <tr>
-                            <td>${team.id}</td>
-                            <td>${team.abbreviation}</td>
-                            <td>${team.city}</td>
-                            <td>${team.conference}</td>
-                            <td>${team.division}</td>
-                            <td>${team.full_name}</td>
-                            <td>${team.name}</td>
-                        </tr>
-                    `;
-                });
-
-                tableBody.innerHTML = tableHTML;
+                renderTeamData(teamData);
             })
             .catch(error => console.log(error));
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const searchInput = document.getElementById('team-search').value.trim().toLowerCase();
+            // Tambahkan kode untuk mencari tim berdasarkan inputan pengguna dan menampilkan hasilnya
+        });
+
+        inputForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const teamIdInput = document.getElementById('team-id').value.trim();
+            const teamAbbreviationInput = document.getElementById('team-abbreviation').value.trim();
+            const teamCityInput = document.getElementById('team-city').value.trim();
+            const teamConferenceInput = document.getElementById('team-conference').value.trim();
+            const teamDivisionInput = document.getElementById('team-division').value.trim();
+            const teamFullNameInput = document.getElementById('team-fullname').value.trim();
+            const teamNameInput = document.getElementById('team-name').value.trim();
+
+            // Buat elemen <tr> untuk menambahkan tim baru ke dalam tabel
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${teamIdInput}</td>
+                <td>${teamAbbreviationInput}</td>
+                <td>${teamCityInput}</td>
+                <td>${teamConferenceInput}</td>
+                <td>${teamDivisionInput}</td>
+                <td>${teamFullNameInput}</td>
+                <td>${teamNameInput}</td>
+            `;
+
+            // Tambahkan baris tim baru ke dalam tabel
+            tableBody.appendChild(newRow);
+
+            // Reset form input
+            inputForm.reset();
+        });
     </script>
 </body>
 </html>
