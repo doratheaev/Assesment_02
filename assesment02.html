@@ -2,6 +2,7 @@
 https://www.balldontlie.io/api/v1/teams -->
 <!-- Dari api yang sudah dipilih, buatlah form berdasarkan atribut API yang dipilih. Misalkan pesan json dari sebuah API:  {"id":101,"advice":"Alway do anything for love, but don't do that.","date":"2015-12-08"}
 Maka akan dibuat form HTML dengan 3 text field yaitu id, advice dan date (25 poin) -->\
+<!-- Dari form HTML yang sudah dibuat, buatlah form validation menggunakan javascript. (35 poin) -->
 
 <!DOCTYPE html>
 <html>
@@ -34,6 +35,19 @@ Maka akan dibuat form HTML dengan 3 text field yaitu id, advice dan date (25 poi
         }
         .form-container input[type="submit"] {
             padding: 5px 10px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        h1 {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        h2 {
+            font-family: Arial, sans-serif;
+            color: #333;
         }
     </style>
 </head>
@@ -136,24 +150,38 @@ Maka akan dibuat form HTML dengan 3 text field yaitu id, advice dan date (25 poi
             const teamFullNameInput = document.getElementById('team-fullname').value.trim();
             const teamNameInput = document.getElementById('team-name').value.trim();
 
-            // Buat elemen <tr> untuk menambahkan tim baru ke dalam tabel
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${teamIdInput}</td>
-                <td>${teamAbbreviationInput}</td>
-                <td>${teamCityInput}</td>
-                <td>${teamConferenceInput}</td>
-                <td>${teamDivisionInput}</td>
-                <td>${teamFullNameInput}</td>
-                <td>${teamNameInput}</td>
-            `;
+            if (validateTeamId(teamIdInput)) {
+                // Buat elemen <tr> untuk menambahkan tim baru ke dalam tabel
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${teamIdInput}</td>
+                    <td>${teamAbbreviationInput}</td>
+                    <td>${teamCityInput}</td>
+                    <td>${teamConferenceInput}</td>
+                    <td>${teamDivisionInput}</td>
+                    <td>${teamFullNameInput}</td>
+                    <td>${teamNameInput}</td>
+                `;
 
-            // Tambahkan baris tim baru ke dalam tabel
-            tableBody.appendChild(newRow);
+                // Tambahkan baris tim baru ke dalam tabel
+                tableBody.appendChild(newRow);
 
-            // Reset form input
-            inputForm.reset();
+                // Reset form input
+                inputForm.reset();
+            }
         });
+
+        // Fungsi untuk memvalidasi Team ID sehingga id tidak boleh ada yg sama
+        function validateTeamId(teamId) {
+            const teamIds = Array.from(tableBody.querySelectorAll('tr td:first-child')).map(td => td.textContent.trim());
+
+            if (teamIds.includes(teamId)) {
+                alert('Team ID sudah digunakan. Mohon masukkan Team ID yang unik.');
+                return false;
+            }
+
+            return true;
+        }
     </script>
 </body>
 </html>
